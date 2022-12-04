@@ -5,21 +5,23 @@ namespace Emily.Compiler.Text;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class TextWindow
 {
-    readonly string _buffer;
     int _start;
     int _length;
 
     internal string DebuggerDisplay => GetDebugDisplay();
 
-    public string Content => _buffer[Start .. End];
+    public SourceText Source { get; }
+    public string Content => Source[Start .. End];
     public int Start => _start;
     public int Length => _length;
     public int End => _start + _length;
-    public bool EndOfFile => _start + _length >= _buffer.Length;
+    public TextSpan Span => new(_start, _length);
+    public TextLocation Location => new(Source, Span);
+    public bool EndOfFile => _start + _length >= Source.Length;
 
-    public TextWindow(string buffer)
+    public TextWindow(SourceText source)
     {
-        _buffer = buffer;
+        Source = source;
         _start = 0;
         _length = 0;
     }
@@ -44,12 +46,12 @@ public class TextWindow
             Extend(1);
         }
 
-        return _buffer[(_start + oldLength) .. (_start + _length)];
+        return Source[(_start + oldLength) .. (_start + _length)];
     }
 
     public char? Peek()
     {
-        return End < _buffer.Length ? _buffer[End] : null;
+        return End < Source.Length ? Source[End] : null;
     }
 
     public char? Next()
@@ -71,15 +73,15 @@ public class TextWindow
     {
         var oldLength = _length;
         Extend(count);
-        return _buffer[(_start + oldLength) .. (_start + _length)];
+        return Source[(_start + oldLength) .. (_start + _length)];
     }
 
-    public void Extend(int count)
+    public void Extend(int count = 1)
     {
         var newLength = _length + count;
-        _length = (_start + newLength) < _buffer.Length
+        _length = (_start + newLength) < Source.Length
             ? newLength
-            : _buffer.Length - _start;
+            : Source.Length - _start;
     }
 
     public void Advance()
@@ -91,8 +93,14 @@ public class TextWindow
     string GetDebugDisplay()
     {
         var displayStart = Math.Max(_start - 10, 0);
-        var displayEnd = Math.Min((_start + _length) + 10, _buffer.Length);
+        var displayEnd = Math.Min((_start + _length) + 10, Source.Length);
         return
-            $"{_buffer[displayStart.._start]}«{_buffer[_start .. (_start + _length)]}»{_buffer[(_start + _length) .. displayEnd]}";
+            $"{Source[displayStart.._start]}«{Source[_start .. (_start + _length)]}»{Source[(_start + _length) .. displayEnd]}";
+    }
+
+    public void Assert(char c)
+    {
+        Trace.Assert(Peek() is {} x && x == c);
+        Extend();
     }
 }

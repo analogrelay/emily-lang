@@ -1,2 +1,5 @@
+[*]
+max_line_length = off
+
 [*.cs]
-dotnet_style_require_accessibility_modifiers = omit_if_default:error;
+dotnet_style_require_accessibility_modifiers = omit_if_default:error

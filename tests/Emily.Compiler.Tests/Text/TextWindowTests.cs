@@ -6,7 +6,7 @@ public class TextWindowTests
     public void IsEmptyWhenInitialized()
     {
         const string buffer = "1234567890";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         
         Assert.Equal(0, window.Start);
         Assert.Equal(0, window.End);
@@ -20,7 +20,7 @@ public class TextWindowTests
     public void ExtendMovesRightEdgeOfWindow()
     {
         const string buffer = "1234567890";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         window.Extend(4);
 
         Assert.Equal(0, window.Start);
@@ -35,7 +35,7 @@ public class TextWindowTests
     public void NextMovesRightEdgeOfWindow()
     {
         const string buffer = "1234567890";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         var result = window.Next(4);
 
         Assert.Equal("1234", result);
@@ -51,7 +51,7 @@ public class TextWindowTests
     public void PeekDoesNotMoveRightEdgeOfWindow()
     {
         const string buffer = "1234567890";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         var result = window.Peek(4);
 
         Assert.Equal("1234", result);
@@ -67,7 +67,7 @@ public class TextWindowTests
     public void AdvanceMovesLeftEdgeOfWindowToRightEdge()
     {
         const string buffer = "1234567890";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         window.Extend(4);
         window.Advance();
 
@@ -83,7 +83,7 @@ public class TextWindowTests
     public void AfterAdvancingNextMovesNewRightEdge()
     {
         const string buffer = "1234567890";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         window.Extend(4);
         window.Advance();
         var result = window.Next(4);
@@ -101,7 +101,7 @@ public class TextWindowTests
     public void AfterAdvancingPeekLooksAtNextWindow()
     {
         const string buffer = "1234567890";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         window.Extend(4);
         window.Advance();
         var result = window.Peek(4);
@@ -119,7 +119,7 @@ public class TextWindowTests
     public void ExtendingPastEndHasNoEffect()
     {
         const string buffer = "1234567890";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         window.Extend(buffer.Length - 2);
         window.Advance();
         var result = window.Next(4);
@@ -137,7 +137,7 @@ public class TextWindowTests
     public void PeekCharReturnsSingleNextCharacter()
     {
         const string buffer = "1234567890";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         window.Extend(4);
         window.Advance();
         var result = window.Peek();
@@ -155,7 +155,7 @@ public class TextWindowTests
     public void PeekCharReturnsNullAtEOF()
     {
         const string buffer = "1234567890";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         window.Extend(buffer.Length);
         window.Advance();
         Assert.True(window.EndOfFile);
@@ -174,7 +174,7 @@ public class TextWindowTests
     public void NextCharReturnsSingleNextCharacter()
     {
         const string buffer = "1234567890";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         window.Extend(4);
         window.Advance();
         var result = window.Next();
@@ -192,7 +192,7 @@ public class TextWindowTests
     public void NextCharReturnsNullAtEOF()
     {
         const string buffer = "1234567890";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         window.Extend(buffer.Length);
         window.Advance();
         Assert.True(window.EndOfFile);
@@ -211,7 +211,7 @@ public class TextWindowTests
     public void PeekWhileReturnsSequenceThatMatchesPredicate()
     {
         const string buffer = "1212ab";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         var result = window.PeekWhile(char.IsDigit);
         Assert.Equal("1212", result);
         
@@ -226,7 +226,7 @@ public class TextWindowTests
     public void PeekWhileReturnsSequenceThatMatchesAnyProvidedCharacter()
     {
         const string buffer = "121234";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         var result = window.PeekWhile('1', '2');
         Assert.Equal("1212", result);
         
@@ -241,7 +241,7 @@ public class TextWindowTests
     public void NextWhileExtensOverSequenceThatMatchesPredicate()
     {
         const string buffer = "1212ab";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         var result = window.NextWhile(char.IsDigit);
         Assert.Equal("1212", result);
         
@@ -256,7 +256,7 @@ public class TextWindowTests
     public void NextWhileExtensOverSequenceThatMatchesAnyProvidedCharacter()
     {
         const string buffer = "121234";
-        var window = new TextWindow(buffer);
+        var window = new TextWindow(SourceText.From(buffer));
         var result = window.NextWhile('1', '2');
         Assert.Equal("1212", result);
         
